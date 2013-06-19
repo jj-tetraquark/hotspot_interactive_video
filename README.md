@@ -1,4 +1,4 @@
-N259_Interactive_Video
+N259 Interactive Video
 ======================
 
-Interactive video piece of the Dyson N259 product.
+N259 Interactive video sequence using the Brightcove Smart Video API.
