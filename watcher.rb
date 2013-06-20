@@ -1,6 +1,8 @@
+# Include required gems
 require 'rubygems'
 require 'fssm'
 
+# Collate the required directories for asset compilation
 coffee_dir = "src/coffee/" 
 coffee_to_path = "js/"
 js_file_name = "application.js"
@@ -13,8 +15,20 @@ haml_to_path    = ARGV[1] || "../"
 
 haml_dir = File.join(File.dirname(__FILE__), haml_from_path)
 
-puts "Welcome to Tom Dallimore's Uber Compiler Engine! Watching folders and waiting for changes..."
+# Welcome message
+puts "Welcome to Tom Dallimore's Uber Compiler Engine! Starting first asset compilation..."
 
+# Run an asset compilation on watcher initialisation
+%x{coffee -c -o #{coffee_to_path} -j #{js_file_name} #{coffee_dir}}
+puts "First Coffeescript compilation successful: #{Time.now.strftime("%d/%m/%Y %H:%M")}"
+
+%x{compass compile}
+puts "First SASS compilation successful: #{Time.now.strftime("%d/%m/%Y %H:%M")}"
+
+# Secondary message
+puts "Watching folders and waiting for changes..."
+
+# Monitor future changes to the assets
 FSSM.monitor do
 	path coffee_dir do
 		glob '**/*.coffee'
