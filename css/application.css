@@ -1,5 +1,4 @@
 /* line 1, ../src/sass/application.scss */
-.hello {
-  text-align: center;
-  position: absolute;
+.main {
+  margin-top: 100px;
 }

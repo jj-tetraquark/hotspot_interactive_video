@@ -12,32 +12,50 @@
 <meta content="" name="description" />
 <meta content="width=device-width" name="viewport" />
 <link href="css/bootstrap.min.css" rel="stylesheet" />
+<style type="text/css">
+  /*<![CDATA[*/
+    body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+    }
+  /*]]>*/
+</style>
 <link href="css/application.css" rel="stylesheet" />
-<script src="js/vendor/modernizr-2.6.2.min.js"></script>
+<script src="js/modernizr-2.6.2.min.js"></script>
 </head>
 <body>
 <div class="navbar navbar-inverse navbar-fixed-top">
 <div class="navbar-inner">
-<div class="container hello">
+<div class="container">
 <a class="brand" href="#">N259</a>
 </div>
 </div>
 </div>
-<div class="container"></div>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<div class="container main">
+<script language="JavaScript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js" type="text/javascript"></script>
+<script language="Javascript" src="http://admin.brightcove.com/js/APIModules_all.js" type="text/javascript"></script>
+<object class="BrightcoveExperience" id="myExperience2489000655001">
+<param name="bgcolor" value="#FFFFFF" />
+<param name="width" value="480" />
+<param name="height" value="270" />
+<param name="playerID" value="2312434516001" />
+<param name="playerKey" value="AQ~~,AAACGhCQx6k~,x43rnzBXqksZZXui8h9kv25Mk1yODteR" />
+<param name="isVid" value="true" />
+<param name="isUI" value="true" />
+<param name="dynamicStreaming" value="true" />
+<param name="@videoPlayer" value="2489000655001" />
+<param name="wmode" value="transparent" />
+<param name="includeAPI" value="true" />
+<param name="templateLoadHandler" value="DV.videoTemplateLoad" />
+</object>
 <script type="text/javascript">
   //<![CDATA[
-    window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')    %script{:src => "js/vendor/bootstrap.min.js"}
+    brightcove.createExperiences();
   //]]>
 </script>
+</div>
+<script src="js/jquery-1.9.1.min.js"></script>
 <script src="js/application.js"></script>
-<script type="text/javascript">
-  //<![CDATA[
-    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-    s.parentNode.insertBefore(g,s)}(document,'script'));
-  //]]>
-</script>
+<script src="js/video.js"></script>
 </body>
 </html>
