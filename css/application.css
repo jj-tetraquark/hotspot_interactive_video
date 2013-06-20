@@ -1,4 +1,55 @@
 /* line 1, ../src/sass/application.scss */
-.main {
-  margin-top: 100px;
+.video_wrapper {
+  width: 570px;
+  height: 360px;
+  position: relative;
+  margin: 0 auto;
+}
+/* line 6, ../src/sass/application.scss */
+.video_wrapper object {
+  position: absolute;
+  z-index: 1;
+}
+/* line 11, ../src/sass/application.scss */
+.video_wrapper .intro_content {
+  width: 200px;
+  position: absolute;
+  z-index: 3;
+  top: 120px;
+  left: 190px;
+  text-align: center;
+}
+/* line 19, ../src/sass/application.scss */
+.video_wrapper img {
+  position: absolute;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+}
+/* line 28, ../src/sass/application.scss */
+.video_wrapper .mappings area {
+  display: none;
+}
+
+/* line 33, ../src/sass/application.scss */
+.map_links {
+  list-style-type: none;
+  width: 200px;
+  top: 70px;
+  left: 0px;
+  position: absolute;
+}
+/* line 39, ../src/sass/application.scss */
+.map_links li {
+  border-bottom: 1px #ccc solid;
+  margin: 5px 0;
+  padding-bottom: 5px;
+}
+/* line 43, ../src/sass/application.scss */
+.map_links li a {
+  width: 170px;
+  display: inline-block;
+  margin-right: 10px;
 }

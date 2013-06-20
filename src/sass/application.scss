@@ -1,3 +1,49 @@
-.main {
-	margin-top:100px;
+.video_wrapper {
+	width:570px;
+	height:360px;
+	position: relative;
+	margin:0 auto;
+	object {
+		position: absolute;
+		z-index:1;
+	}
+
+	.intro_content {
+		width:200px;
+		position: absolute;
+		z-index:3;
+		top:120px;
+		left:190px;
+		text-align: center;
+	}
+	img {
+		position: absolute;
+		z-index:2;
+		height:100%;
+		width:100%;
+		top:0px;
+		left:0px;
+	}
+	.mappings {
+		area {
+			display:none;
+		}
+	}
+}
+.map_links {
+	list-style-type: none;
+	width:200px;
+	top:70px;
+	left:0px;
+	position: absolute;
+		li {
+			border-bottom:1px #ccc solid;
+			margin:5px 0;
+			padding-bottom: 5px;
+			 a {
+			 	width:170px;
+			 	display: inline-block;
+			 	margin-right: 10px;
+			 }
+		}
 }
