@@ -1,10 +1,39 @@
 var dysonPlayer;
 var dysonVP;
 var experienceModule;
-var DV = {}
-var mbegin = new Array(15,20);
-var mend = new Array(19,24);
-var lend = [];
+var DV = {};
+// Main video end parameter
+var endParamater = 13; 
+// JSON object of mapping data
+var mappings = [
+    {
+        Begin: 2,
+        Coords: "265,53,398,143",
+        Tracker: "cleaner head",
+        Vidstart: 14,
+        Vidend: 18,
+        End: 6,
+        Linkname: "Dyson Cleaner head"
+    },
+    {
+        Begin: 8,
+        Coords: "162,228,278, 305",
+        Tracker: "DDM",
+        Vidstart: 20,
+        Vidend: 24,
+        End: 12,
+        Linkname: "Dyson Digital Motor"
+    }
+];
+// Object to contain current mapping environment variables
+var activeMap = new Object();
+activeMap.Return = 0;
+activeMap.Element = undefined;
+activeMap.Begin = 0;
+activeMap.End = 0;
+// Variable to trigger to the loop on the main video. Before a mapping link is evaluated and directed to a new piece of video content, the mainVid variable is updated to 1, in order to stop the video loop backing to the beginning (0) of the video
+var mainVid = 0;
+
 DV.videoTemplateLoad = function(experienceID) {
     console.log("INTERACTIVE VIDEO: TEMPLATE_LOADED")
     DV.dysonPlayer = brightcove.getExperience(experienceID);
@@ -25,66 +54,98 @@ DV.onPlay = function(evt) {
 }
 DV.onProgress = function (evt) {    
     var dur = evt.duration;
-    var pos = evt.position;
+    // Set current video position as global so the start_section function can access it, preventing it from running in the DV.onProgress function
+    window.pos = evt.position;
     //MAPPING GENERATOR
-    if (equal_to(mbegin, mend)) 
+    for (var map=0; map < mappings.length;map++)
     {
-        setTimeout(function() {
-            for (var map=0; map < mbegin.length;map++)
-            {
-                var el = '.map_' + Math.floor(mbegin[map]);
-                if (between(pos, mbegin[map], mend[map])) {
-                    add_map(el);
-                    map++;
-                } else {
-                    remove_map(el);
-                }
-            }
-        }, 1000);
+        mapData = mappings[map];
+        if (between(window.pos, mapData.Begin, mapData.End)) {
+            add_map(mapData.Begin, mapData.Tracker, mapData.Coords, mapData.Vidstart, mapData.Vidend);
+            // Added to stop the first mapping flickering
+            map++;
+        } else {
+            remove_map();
+        }
+    }
+    // If mainVid variable is set to 0 and current video position is equal to or more of the main video end timestamp parameter, seek video back to beginning ()
+    if (window.pos >= endParamater && mainVid == 0) {
+        seek_vid(0);
     } else {
-        console.log("WARNING: You do not have equal mapping begin and end values!");
+        return false;
+    }
+
+}
+// Logic for starting a new video section after clicking a mapping
+DV.start_section = function(start) {
+    mainVid = 1;
+    // Store the previous video position
+    activeMap.Return = window.pos;
+    // Point to the new video
+    seek_vid(start);
+    document.getElementById("eventLog").innerHTML += "USER EVENT: <b>"+activeMap.Element+"<b/> triggered<br/>";
+    // Check every 100 millisecond and then return to the previous position value
+    var position=setInterval(function() {
+        if (window.pos >= activeMap.End) {
+            seek_vid(activeMap.Return);
+            document.getElementById("eventLog").innerHTML += "APPLICATION EVENT: Return to original location: <b>"+activeMap.Return+"<b/><br/>";
+            mainVid = 0;
+            clearInterval(position);
+        }
+    }, 100);
+}
+// Generate the list of links for each mapping
+link_list = function() {
+    for(var map=0; map < mappings.length;map++) {
+        mapData = mappings[map];
+        $('.map_links').append('<li class=\"map_' + mapData.Begin + '\" data-tracking=\"'+mapData.Tracker+'" data-id="'+mapData.Begin+'"><a href="#">'+mapData.Linkname+'</a><i class="icon-chevron-right"></i></li>');
     }
 }
-DV.restart = function() {
-    //Resets the scene variable back to 0 to trigger the first loop and sets the video position back to 0
-    scene = 0;
-    seek_vid(0);
-    document.getElementById("eventLog").innerHTML += "USER EVENT: <b>Journey reset<b/><br/>";
-    return false;
+// Update the activeMap object and trigger the section of video. Then send to the analytics data class
+link_trigger = function () {
+    $('.map_links').on('click', 'li', function() {
+        var target_map = $(this).attr('data-id');
+        for(var map=0; map < mappings.length;map++) {
+            mapData = mappings[map]
+            if (target_map == mapData.Begin) {
+                mainVid = 1;
+                activeMap.Element = '.map_'+mapData.Begin;
+                activeMap.Begin = mapData.Vidstart;
+                activeMap.End = mapData.Vidend;
+                DV.start_section(activeMap.Begin);
+                tracker_tag = $(this).attr('data-tracking');
+                HedgehogGAData.send(['link-list', tracker_tag]);
+            }
+        }
+
+    });
 }
 DV.play = function() {
     DV.dysonVP.play();
+}
+DV.pause = function() {
+    DV.dysonVP.pause(true);
 }
 //HELPER FUNCTIONS
 between = function(x, min, max) {
     return x >= min && x <= max;
 }
-greater_than = function(x,min) {
-    return x >= min;
-}
-lesser_greater = function(x, min, max) {
-    return x < min && x > max;
-}
-add_map = function(elem) {
+add_map = function(element, tracker, coords, start, end) {
+    // Remove spaces and replace with hyphens for the tracking data
+    trim_tracker = tracker.split(' ').join('-');
+    // Remove spaces from the coords string
+    trim_coords = coords.replace(/\s/g, '');
     if ($('.mappings').children().length < 1) {
-        $('.mappings').append('<area alt=\"Cleaner head\" class=\"map_15\" coords=\"265,53,398,143\" href=\"#\" shape=\"rect\">');
+        $('.mappings').append('<area data-tracking="'+trim_tracker+'" class=\"map_'+element+'\" coords=\"'+trim_coords+'\" href=\"#\" shape=\"rect\">');
+        activeMap.Element = '.map_'+element;
+        activeMap.Begin = start;
+        activeMap.End = end;
     } else {
         return false;
     }
 }
-remove_map = function(elem) {
+remove_map = function() {
     $('.mappings').children().remove();
-    console.log("NOOOO");
-}
-for_loop = function(time_val, time, duration) {
-    for (var i=0; i < time_val.length; i++)
-    {   
-        var obj = duration-time_val[i];
-        time.push(obj);
-    }
-}
-equal_to = function(z,y) {
-    return z.length == y.length
 }
 seek_vid = function(time) {
     return DV.dysonVP.seek(time);

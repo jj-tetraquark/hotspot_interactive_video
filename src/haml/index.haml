@@ -58,13 +58,11 @@
         / Link mappings
         %map.mappings#_image_map_N259{:name => "image_map_N259"}
       / External map links 
-      %ul.map_links.animated.fadeOutUp
-        %li.map_15
-          %a{:href => "http://www.google.co.uk", :data => {:tracking => 'Cleaner head'}} DDM
-          %i.icon-chevron-right
-        %li.map_20
-          %a{:href => "http://www.msn.com", :data => {:tracking => 'DDM'}} Ball Technology
-          %i.icon-chevron-right
+      %ul.map_links
+      .btn.btn-success.play2 Play
+      .btn.btn-danger Pause
+      #eventLog
+        %h3 Event log
 
 
       %hr/
@@ -74,3 +72,8 @@
     %script{:src => "js/jquery-1.9.1.min.js"}
     %script{:src => "js/application.js"}
     %script{:src => "js/video.js"}
+    :javascript
+      var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+      s.parentNode.insertBefore(g,s)}(document,'script'));
