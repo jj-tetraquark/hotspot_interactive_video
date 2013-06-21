@@ -143,6 +143,7 @@ add_map = function(element, tracker, coords, start, end) {
     trim_tracker = tracker.split(' ').join('-');
     // Remove spaces from the coords string
     trim_coords = coords.replace(/\s/g, '');
+    // Possible need to tighten this declaration down, to prevent it being so open
     if ($('area').length < 1) {
         $('.mappings').append('<area data-tracking="'+trim_tracker+'" class=\"map_'+element+'\" coords=\"'+trim_coords+'\" href=\"#\" shape=\"rect\">');
         activeMap.Element = '.map_'+element;
@@ -153,6 +154,7 @@ add_map = function(element, tracker, coords, start, end) {
     }
 }
 remove_map = function() {
+    // Remove all area tags
     $('.mappings').children().remove();
 }
 seek_vid = function(time) {
