@@ -33,6 +33,7 @@ activeMap.Begin = 0;
 activeMap.End = 0;
 // Variable to trigger to the loop on the main video. Before a mapping link is evaluated and directed to a new piece of video content, the mainVid variable is updated to 1, in order to stop the video loop backing to the beginning (0) of the video
 var mainVid = 0;
+var current_map = 0;
 
 DV.videoTemplateLoad = function(experienceID) {
     console.log("INTERACTIVE VIDEO: TEMPLATE_LOADED")
@@ -59,11 +60,15 @@ DV.onProgress = function (evt) {
     //MAPPING GENERATOR
     for (var map=0; map < mappings.length;map++)
     {
-        mapData = mappings[map];
+        // Add external current_map variable to prevent the if statement looping through all the values in the for loop
+        mapData = mappings[current_map];
         if (between(window.pos, mapData.Begin, mapData.End)) {
             add_map(mapData.Begin, mapData.Tracker, mapData.Coords, mapData.Vidstart, mapData.Vidend);
-            // Added to stop the first mapping flickering
-            map++;
+            console.log("success");
+        // Once the current video position is greater than the current array end value, increment the current_map variable
+        } else if (greater(window.pos, mapData.End)) {
+             current_map++;
+             remove_map();
         } else {
             remove_map();
         }
@@ -130,12 +135,15 @@ DV.pause = function() {
 between = function(x, min, max) {
     return x >= min && x <= max;
 }
+greater = function(x, max) {
+    return x >= max;
+}
 add_map = function(element, tracker, coords, start, end) {
     // Remove spaces and replace with hyphens for the tracking data
     trim_tracker = tracker.split(' ').join('-');
     // Remove spaces from the coords string
     trim_coords = coords.replace(/\s/g, '');
-    if ($('.mappings').children().length < 1) {
+    if ($('area').length < 1) {
         $('.mappings').append('<area data-tracking="'+trim_tracker+'" class=\"map_'+element+'\" coords=\"'+trim_coords+'\" href=\"#\" shape=\"rect\">');
         activeMap.Element = '.map_'+element;
         activeMap.Begin = start;
