@@ -52,6 +52,7 @@ class HedgehogAnalyticsData
 
   # Send the data array to the gaq object
   send: (hedgehogs_array) ->
+    # Check if gaq object is available beforehand
     if @enabled
       _gaq.push(@build(hedgehogs_array))
     return
