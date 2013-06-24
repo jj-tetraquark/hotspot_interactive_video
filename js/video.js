@@ -31,6 +31,7 @@ activeMap.Return = 0;
 activeMap.Element = undefined;
 activeMap.Begin = 0;
 activeMap.End = 0;
+activeMap.Mapper = 0;
 // Variable to trigger to the loop on the main video. Before a mapping link is evaluated and directed to a new piece of video content, the mainVid variable is updated to 1, in order to stop the video loop backing to the beginning (0) of the video
 var mainVid = 0;
 var current_map = 0;
@@ -57,6 +58,15 @@ DV.onProgress = function (evt) {
     var dur = evt.duration;
     // Set current video position as global so the start_section function can access it, preventing it from running in the DV.onProgress function
     window.pos = evt.position;
+    // If mainVid variable is set to 0 and current video position is equal to or more of the main video end timestamp parameter, seek video back to beginning ()
+    if (window.pos >= endParamater && mainVid == 0) {
+        seek_vid(0);
+    }
+    // Reset the current_map variable when the main video loops
+    if (between(window.pos, 0, 0.5)) {
+        activeMap.Mapper = 0;
+        current_map = 0;
+    }
     //MAPPING GENERATOR
     for (var map=0; map < mappings.length;map++)
     {
@@ -64,7 +74,6 @@ DV.onProgress = function (evt) {
         mapData = mappings[current_map];
         if (between(window.pos, mapData.Begin, mapData.End)) {
             add_map(mapData.Begin, mapData.Tracker, mapData.Coords, mapData.Vidstart, mapData.Vidend);
-            console.log("success");
         // Once the current video position is greater than the current array end value, increment the current_map variable
         } else if (greater(window.pos, mapData.End)) {
              current_map++;
@@ -73,13 +82,6 @@ DV.onProgress = function (evt) {
             remove_map();
         }
     }
-    // If mainVid variable is set to 0 and current video position is equal to or more of the main video end timestamp parameter, seek video back to beginning ()
-    if (window.pos >= endParamater && mainVid == 0) {
-        seek_vid(0);
-    } else {
-        return false;
-    }
-
 }
 // Logic for starting a new video section after clicking a mapping
 DV.start_section = function(start) {
@@ -92,6 +94,7 @@ DV.start_section = function(start) {
     // Check every 100 millisecond and then return to the previous position value
     var position=setInterval(function() {
         if (window.pos >= activeMap.End) {
+            current_map = activeMap.Mapper;
             seek_vid(activeMap.Return);
             document.getElementById("eventLog").innerHTML += "APPLICATION EVENT: Return to original location: <b>"+activeMap.Return+"<b/><br/>";
             mainVid = 0;
@@ -149,6 +152,7 @@ add_map = function(element, tracker, coords, start, end) {
         activeMap.Element = '.map_'+element;
         activeMap.Begin = start;
         activeMap.End = end;
+        activeMap.Mapper = current_map;
     } else {
         return false;
     }
