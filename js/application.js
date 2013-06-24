@@ -2,6 +2,30 @@
 (function() {
   var HedgehogAnalyticsData, log;
 
+  HedgehogAnalyticsData = (function() {
+    function HedgehogAnalyticsData(enabled) {
+      this.enabled = enabled;
+      this.send();
+    }
+
+    HedgehogAnalyticsData.prototype.build = function(hedgehogs_array) {
+      if (hedgehogs_array !== void 0) {
+        this.category = 'hedgehog-interactive-video-' + hedgehogs_array[0];
+        this.identifier = hedgehogs_array[1];
+      }
+      return ['_trackEvent', this.category, 'click', this.identifier];
+    };
+
+    HedgehogAnalyticsData.prototype.send = function(hedgehogs_array) {
+      if (this.enabled) {
+        _gaq.push(this.build(hedgehogs_array));
+      }
+    };
+
+    return HedgehogAnalyticsData;
+
+  })();
+
   log = function(message) {
     if (typeof console === 'object') {
       return console.log(message);
@@ -36,29 +60,5 @@
       return DV.play();
     });
   });
-
-  HedgehogAnalyticsData = (function() {
-    function HedgehogAnalyticsData(enabled) {
-      this.enabled = enabled;
-      this.send();
-    }
-
-    HedgehogAnalyticsData.prototype.build = function(hedgehogs_array) {
-      if (hedgehogs_array !== void 0) {
-        this.category = 'hedgehog-interactive-video-' + hedgehogs_array[0];
-        this.identifier = hedgehogs_array[1];
-      }
-      return ['_trackEvent', this.category, 'click', this.identifier];
-    };
-
-    HedgehogAnalyticsData.prototype.send = function(hedgehogs_array) {
-      if (this.enabled) {
-        _gaq.push(this.build(hedgehogs_array));
-      }
-    };
-
-    return HedgehogAnalyticsData;
-
-  })();
 
 }).call(this);

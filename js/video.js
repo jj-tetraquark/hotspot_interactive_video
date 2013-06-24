@@ -34,6 +34,7 @@ activeMap.End = 0;
 activeMap.Mapper = 0;
 // Variable to trigger to the loop on the main video. Before a mapping link is evaluated and directed to a new piece of video content, the mainVid variable is updated to 1, in order to stop the video loop backing to the beginning (0) of the video
 var mainVid = 0;
+// Current map array in the JSON object
 var current_map = 0;
 
 DV.videoTemplateLoad = function(experienceID) {
